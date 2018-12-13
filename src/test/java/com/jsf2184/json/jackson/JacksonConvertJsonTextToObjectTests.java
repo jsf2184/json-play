@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import com.jsf2184.json.play.jackson.JsonStrings;
 import com.jsf2184.json.utility.jackson.JacksonUtil;
 import com.jsf2184.model.City;
@@ -20,6 +21,47 @@ import java.util.List;
 
 public class JacksonConvertJsonTextToObjectTests {
 
+
+    @Test
+    public void testParseString() throws IOException {
+        JsonParser parser = JacksonUtil.createParser("\"abc\"");
+        String val = JacksonUtil.parseString(parser);
+        Assert.assertEquals("abc", val);
+    }
+
+    @Test
+    public void testParseNumberAsNumberConvertsOk() throws IOException {
+        JsonParser parser = JacksonUtil.createParser("123");
+        Integer val = JacksonUtil.parseInt(parser);
+        Assert.assertEquals(new Integer(123), val);
+    }
+
+    @Test
+    public void testParseNumberAsStringConvertsOk() throws IOException {
+        JsonParser parser = JacksonUtil.createParser("123");
+        String val = JacksonUtil.parseString(parser);
+        Assert.assertEquals("123", val);
+    }
+
+
+    @Test
+    public void testParseStringAsNumberConvertsOk() throws IOException {
+        JsonParser parser = JacksonUtil.createParser("\"123\"");
+        Integer val = JacksonUtil.parseInt(parser);
+        Assert.assertEquals(new Integer(123), val);
+    }
+
+    @Test
+    public void testParseBadStringAsNumberThrows() throws IOException {
+        boolean caught = false;
+        JsonParser parser = JacksonUtil.createParser("\"abc\"");
+        try {
+            Integer val = JacksonUtil.parseInt(parser);
+        } catch (Exception ignore) {
+            caught = true;
+        }
+        Assert.assertTrue(caught);
+    }
 
 
     @Test
